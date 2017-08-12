@@ -1,0 +1,204 @@
+\documentclass[twocolumn,11pt]{article}
+\usepackage[utf8]{inputenc} 
+    % I've locked the doors, but just in case some unicode gets in
+\usepackage{hyperref} % URLs
+
+\title{A note on Schultz}
+\author{Jarvist Moore Frost}
+\date{August 2017}
+
+\begin{document}
+
+\maketitle
+
+\section{These notes}
+
+Feynman's 1955 paper 'Slow electrons in polar crystals'\cite{Feynman1955}
+introduces his path-integral solution to the polaron problem. 
+This solves the Fr\"ohlich Hamiltonian, which considers effective-mass
+electrons interacting via polar vibrations induced in the lattice. 
+
+Schultz\cite{Fowler2005} received his thesis, "Electron-Lattice Interactions in
+Polar Crystals" in 1956. 
+A two-year postdoctoral position in Birmingham working with Rudolf Peierls led
+to his 1959 Physical Review, 
+"Slow Electrons in Polar Crystals: Self-Energy, Mass, and
+Mobility"\cite{Schultz1959}.  
+These notes are chiefly concerned with the early part of this paper, where the
+Feynman theory is 'fleshed out' with more experimental observables. 
+
+Implementing numerical methods is far easier today than it would have been for
+Schultz (or rather, for Hannah Landsman acknowledged 'for most of the numerical
+work') with the 'Whirlwind Digital Computer'\cite{WhirlwindWikipedia}, a very early
+vacuum tube digital computer built at MIT.  
+These notes were developed having read the original literature, in order to
+develop a modern set of codes to implement the methods, and so enable
+calculation of polaron states for arbitrary materials. 
+The codes are developed in the Julia language\cite{Julia}. 
+This language is high level and mathematically expressive, as such these notes
+are an adjunct to reading the program source codes directly.  
+These are available online at
+\url{https://github.com/jarvist/PolaronMobility.jl}.
+
+\section{Schultz's polaron radii}
+
+Schultz1959\cite{Schultz1959}  defines the
+Feynman polaron radius as the standard deviation of the Gaussian Wavefunction. 
+This Gaussian is fully specified by the Simple Harmonic Oscillator parameters
+for the polaron system, which in turn are provided by Feynman's variational
+solution (Feynman1955\cite{Feynman1955}) to the
+Fr\"ohlich polaron problem.
+
+The reduced mass is defined in terms of the internal polaron parameters $v$ and
+$w$,
+
+\begin{equation}
+	\mu=m(v^2-w^2)/v^2
+\end{equation}
+
+Here $m$ is the band effective-mass of the electron (hole). 
+
+The (Gaussian) wavefunction is fully specified (plotted above),
+
+\begin{equation}
+	\psi(r)=(\mu v/\pi)^{\frac{3}{4}} exp(-\frac{\mu v r^2}{2}).
+\end{equation}
+
+And from the standard deviation of this wavefunction, a
+radius is defined:
+
+\begin{equation}
+    r_f \equiv (<\rho^2>)^{\frac{1}{2}} = (3/2\mu v)^{\frac{1}{2}}
+    \quad \mathrm{(2.4, Schultz)}
+\end{equation}    
+
+Here $\rho$ is the density of the wavefunction, $\mu$ is the reduced
+(effective) mass of the electron and interacting phonon-cloud, while
+$v$ and \(w\) are internal polaron parameters characterising the
+harmonic motion of the polaron. The units of $v$ and \(w\) are
+$\hbar\omega$.
+
+Schultz: 'Using the weak-$\alpha$ coupling expansions given by Feynman for $w$
+and $v$, we find'
+
+\begin{equation}
+    r_f (\alpha\rightarrow 0) \approx (3/0.44\alpha)^{\frac{1}{2}} (2m\omega)^{-\frac{1}{2}}
+\end{equation}
+
+To understand where this magic number (0.44) comes from, one must return
+to Feynman1955 and repeat the derivation used to get the
+small-$\alpha$ expansion for energy. 
+This is the part around Eqn 35 to 36 in Feynman 1955.
+
+Finding the term $2\mu v$ is our aim.
+
+Following Feynman, assuming $\alpha$ is small, $v=(1+\epsilon)w$.
+You can then go back to the energy integral Feynman(31), substituting
+your $v$ expansion in. You can expand the square-root on on the
+denominator, by pulling out terms of $w$ to simplify, before taking a
+term of $\tau^{\frac{1}{2}}$ out to place the root in the form of
+$(1+x)^n$. You can then use a binomial expansion for this square root,
+and keep only zeroth and first order in $\epsilon$ terms. The
+resulting integral in the total energy has two parts, the zeroth-order
+contribution integrating to 1, and the linear in $\epsilon$ term (P)
+apparently analytic and provided by Feynman (35),
+
+\begin{equation}
+    2w^{-1} [ (1+w)^{\frac{1}{2}} - 1] = P .
+\end{equation}
+
+This makes the total energy,
+
+\begin{equation}
+    E=\frac{3}{4v}(v-w)^2-A 
+    \quad \mathrm{, (Feynman33)}
+\end{equation}
+
+which with our linear-in-$\epsilon$ form of the integral $A$,
+
+\begin{equation}
+    E = \frac{3}{4v}(v-w)^2 - \alpha \frac{v}{w} {[}1-P{]}
+\end{equation}
+
+Again, substituting $v=(1+\epsilon)w$,
+
+\begin{equation}
+    E=\frac{3}{4}\frac{((1+\epsilon)w - w)^2}{(1+\epsilon)w}
+       - \alpha\frac{(1+\epsilon)w}{w} [1-P], 
+\end{equation}
+
+and discarding high order (in $\epsilon$) terms,
+
+\begin{equation}
+    E = \frac{3}{4} w\epsilon^2 -\alpha -\alpha\epsilon[1-P],
+\end{equation}
+
+as given by Feynman.
+
+If we reorder terms,
+
+\begin{equation}
+    E = \frac{3}{4} w\epsilon^2 -\alpha\epsilon[1-P]-(\alpha),
+\end{equation}
+
+it becomes clear the total energy has a quadratic ($E =a\epsilon^2 + b\epsilon +c $) form in $\epsilon$.
+
+We will want a variational (minimum energy) solution. This found at the
+minimum, $x=\frac{-b}{2a}$ in the standard quadratic formula, and so,
+
+\begin{equation}
+    \epsilon = \frac{2}{3} \alpha \frac{(1-P)}{w}.
+\end{equation}
+
+This is as given by Feynman, valid for small-$\alpha$ only, due to the various
+occasions where $\epsilon$ is taken as small.
+
+We can now return to the key $2\mu v$ term.
+
+Expanding this identity with our definition of $\mu$,
+
+\begin{equation}
+    2\mu v = 2m_e \frac{v^2-w^2}{v}.
+\end{equation}
+
+Substituting in $v=(1+\epsilon)w$, following through the algebra, and
+as epsilon is small approximating $\frac{1}{1+\epsilon}=\frac{1}{1}$,
+we eventually have
+
+\begin{equation}
+    2\mu v = 2m_e[2w\epsilon].
+\end{equation}
+
+Substituting in our form for $\epsilon$, by simple algebraic
+rearrangement we get
+
+\begin{equation}
+    v=(1+\frac{2\alpha(1-P)}{3w})w = w + \frac{2}{3} \alpha (1-P)
+\end{equation}
+
+Feynman states that `the variational solution is least for $w=3$', and
+goes on to state that the energy correction is anyway insensitive to the
+choice of $w$.
+
+If $w=3$, \(P=\frac{2}{3}\), and we have that,
+
+\begin{equation}
+    v=3+\frac{2}{9}\alpha .
+\end{equation}
+
+Thus, $2\mu v = 2m_e \frac{4}{9}\alpha = 2m_e 0.\overline{4} \alpha$.
+
+Schultz1959 Eqn. 2.5a approximates this as 
+
+\begin{equation}
+    2\mu v = 2m_e 0.44 . 
+\end{equation}
+
+It is not obvious whether this arises as a printing error, or was an
+intentional (1\% error) approximation.
+
+\bibliography{ANoteOnSchultz}
+\bibliographystyle{unsrturl} %plainurl} %unsrt}
+
+\end{document}
+
