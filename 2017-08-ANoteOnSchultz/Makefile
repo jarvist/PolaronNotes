@@ -1,3 +1,3 @@
 TARGET=ANoteOnSchultz
 FIGS=figs
-include Makefile.include
+include ../Makefile.include
