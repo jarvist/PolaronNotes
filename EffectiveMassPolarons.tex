@@ -11,25 +11,56 @@
 
 \maketitle
 
-\section{These notes}
+\section{Slow electrons in polar crystals}
 
-Feynman's 1955 paper 'Slow electrons in polar crystals'\cite{Feynman1955}
-introduces his path-integral solution to the polaron problem. 
-This solves the Fr\"ohlich Hamiltonian, which considers effective-mass
-electrons interacting via polar vibrations induced in the lattice. 
+Theories of electron transport are often based on (classical) gas transport. 
+Often the lattice is a stationary background. 
+If the time between scattering events is large, compared to the time spent
+scattering, a Boltzmann equation can be applied.
 
-Schultz\cite{Fowler2005} received his thesis, "Electron-Lattice Interactions in
-Polar Crystals" in 1956. 
+A polar lattice, by definition, interacts with the charge of an electron. 
+This interaction, the dielectric electron-phonon coupling, leads to the
+formation of a polaron. 
+Here the bare-electron is dressed in a cloud of lattice vibrations. 
+(Themselves the bosonic `phonon' quasi-particles.) 
+
+Fr\"ohlich did much of the early formal work on this problem, which some
+attribute as originating with Landau. 
+
+The most simple posing is in the Fr\"ohlich Hamiltonian.
+
+((Froh Hamiltonian))
+
+Here a single effective-mass electron interacts with an infinite field of
+(definite frequency, energy) polar lattice vibrations. 
+
+The electron-phonon interaction is calculated from bulk properties of the
+lattice.
+
+The Hamiltonian is simple to state, but formiddable to solve. 
+This is due to the changing number of particles (the lattice phonon
+population). 
+Feynman's 1955 paper `Slow electrons in polar crystals'\cite{Feynman1955}
+introduces his path-integral solution. 
+This stands as a remarkable example of a quantum field problem which can be
+solved exactly. 
+The quantum field is integrated over by the path-integration formulation of
+quantum mechanics. 
+
+\section{Schultz 1959}
+
+Schultz\cite{Fowler2005} received his thesis, ``Electron-Lattice Interactions in
+Polar Crystals'' in 1956. 
 A two-year postdoctoral position in Birmingham working with Rudolf Peierls led
 to his 1959 Physical Review, 
-"Slow Electrons in Polar Crystals: Self-Energy, Mass, and
-Mobility"\cite{Schultz1959}.  
+``Slow Electrons in Polar Crystals: Self-Energy, Mass, and
+Mobility''\cite{Schultz1959}.  
 These notes are chiefly concerned with the early part of this paper, where the
 Feynman theory is 'fleshed out' with more experimental observables. 
 
 Implementing numerical methods is far easier today than it would have been for
-Schultz (or rather, for Hannah Landsman acknowledged 'for most of the numerical
-work') with the 'Whirlwind Digital Computer'\cite{WhirlwindWikipedia}, a very early
+Schultz (or rather, for Hannah Landsman acknowledged `for most of the numerical
+work') with the `Whirlwind Digital Computer'\cite{WhirlwindWikipedia}, a very early
 vacuum tube digital computer built at MIT.  
 These notes were developed having read the original literature, in order to
 develop a modern set of codes to implement the methods, and so enable
